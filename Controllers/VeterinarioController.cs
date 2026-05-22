@@ -5,6 +5,7 @@ using VetApp.Models;
 
 namespace VetApp.Controllers
 {
+    // Controlador para gestionar el catálogo de veterinarios
     [ApiController]
     [Route("api/[controller]")]
     public class VeterinarioController : ControllerBase
@@ -16,6 +17,7 @@ namespace VetApp.Controllers
             _context = context;
         }
 
+        // Obtener todos los veterinarios
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,6 +25,7 @@ namespace VetApp.Controllers
             return Ok(veterinarios);
         }
 
+        // Obtener un veterinario por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -31,6 +34,7 @@ namespace VetApp.Controllers
             return Ok(veterinario);
         }
 
+        // Crear un nuevo veterinario
         [HttpPost]
         public async Task<IActionResult> Create(Veterinario veterinario)
         {
@@ -39,6 +43,7 @@ namespace VetApp.Controllers
             return Ok(veterinario);
         }
 
+        // Actualizar un veterinario existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Veterinario veterinario)
         {
@@ -53,6 +58,7 @@ namespace VetApp.Controllers
             return Ok(existing);
         }
 
+        // Eliminar un veterinario por ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
