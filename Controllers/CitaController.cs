@@ -5,6 +5,7 @@ using VetApp.Models;
 
 namespace VetApp.Controllers
 {
+    // Controlador para gestionar las citas veterinarias
     [ApiController]
     [Route("api/[controller]")]
     public class CitaController : ControllerBase
@@ -16,6 +17,7 @@ namespace VetApp.Controllers
             _context = context;
         }
 
+        // Obtener todas las citas incluyendo datos de veterinario y mascota
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,6 +28,7 @@ namespace VetApp.Controllers
             return Ok(citas);
         }
 
+        // Obtener una cita por ID con sus relaciones
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,6 +40,7 @@ namespace VetApp.Controllers
             return Ok(cita);
         }
 
+        // Crear una nueva cita
         [HttpPost]
         public async Task<IActionResult> Create(Cita cita)
         {
@@ -45,6 +49,7 @@ namespace VetApp.Controllers
             return Ok(cita);
         }
 
+        // Actualizar una cita existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Cita cita)
         {
@@ -60,6 +65,7 @@ namespace VetApp.Controllers
             return Ok(existing);
         }
 
+        // Eliminar una cita por ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
