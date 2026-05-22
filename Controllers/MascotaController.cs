@@ -5,6 +5,7 @@ using VetApp.Models;
 
 namespace VetApp.Controllers
 {
+    // Controlador para gestionar el catálogo de mascotas
     [ApiController]
     [Route("api/[controller]")]
     public class MascotaController : ControllerBase
@@ -16,6 +17,7 @@ namespace VetApp.Controllers
             _context = context;
         }
 
+        // Obtener todas las mascotas registradas
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,6 +25,7 @@ namespace VetApp.Controllers
             return Ok(mascotas);
         }
 
+        // Obtener una mascota por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -31,6 +34,7 @@ namespace VetApp.Controllers
             return Ok(mascota);
         }
 
+        // Registrar una nueva mascota
         [HttpPost]
         public async Task<IActionResult> Create(Mascota mascota)
         {
@@ -39,6 +43,7 @@ namespace VetApp.Controllers
             return Ok(mascota);
         }
 
+        // Actualizar los datos de una mascota existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Mascota mascota)
         {
@@ -54,6 +59,7 @@ namespace VetApp.Controllers
             return Ok(existing);
         }
 
+        // Eliminar una mascota por ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
