@@ -35,10 +35,11 @@ function Mascotas() {
     setEditando(m.id)
   }
 
-  const eliminar = async (id) => {
-    await axios.delete(`${API}/${id}`)
-    cargar()
-  }
+const eliminar = async (id) => {
+  if (!window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) return
+  await axios.delete(`${API}/${id}`)
+  cargar()
+}
 
   return (
     <div>

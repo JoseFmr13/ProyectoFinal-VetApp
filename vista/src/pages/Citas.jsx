@@ -61,10 +61,11 @@ function Citas() {
     setEditando(c.id)
   }
 
-  const eliminar = async (id) => {
-    await axios.delete(`${API}/${id}`)
-    cargar()
-  }
+const eliminar = async (id) => {
+  if (!window.confirm('¿Estás seguro de que deseas eliminar esta cita?')) return
+  await axios.delete(`${API}/${id}`)
+  cargar()
+}
 
   const vetsfiltrados = veterinarios.filter(v =>
     v.nombre.toLowerCase().includes(busquedaVet.toLowerCase()) && busquedaVet !== ''
