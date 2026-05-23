@@ -32,25 +32,30 @@ function App() {
 const styles = {
   nav: {
     backgroundColor: '#2c7be5',
-    padding: '12px 24px',
+    padding: '14px 32px',
     display: 'flex',
     alignItems: 'center',
-    gap: '20px'
+    gap: '24px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
   },
   logo: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: '20px',
-    marginRight: 'auto'
+    fontSize: '22px',
+    marginRight: 'auto',
+    letterSpacing: '1px'
   },
   link: {
     color: 'white',
     textDecoration: 'none',
-    fontSize: '16px'
+    fontSize: '15px',
+    padding: '6px 14px',
+    borderRadius: '6px',
+    transition: 'background 0.2s'
   },
   container: {
-    padding: '24px'
+    padding: '32px',
+    maxWidth: '1100px',
+    margin: '0 auto'
   }
 }
-
-export default App
