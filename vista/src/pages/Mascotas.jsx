@@ -16,15 +16,19 @@ function Mascotas() {
   }
 
   const guardar = async () => {
-    if (editando) {
-      await axios.put(`${API}/${editando}`, form)
-      setEditando(null)
-    } else {
-      await axios.post(API, form)
-    }
-    setForm({ nombre: '', especie: '', raza: '', nombreDueno: '' })
-    cargar()
+  if (!form.nombre.trim() || !form.especie.trim() || !form.raza.trim() || !form.nombreDueno.trim()) {
+    alert('Por favor completa todos los campos')
+    return
   }
+  if (editando) {
+    await axios.put(`${API}/${editando}`, form)
+    setEditando(null)
+  } else {
+    await axios.post(API, form)
+  }
+  setForm({ nombre: '', especie: '', raza: '', nombreDueno: '' })
+  cargar()
+}
 
   const editar = (m) => {
     setForm({ nombre: m.nombre, especie: m.especie, raza: m.raza, nombreDueno: m.nombreDueno })

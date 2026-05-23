@@ -16,6 +16,10 @@ function Veterinarios() {
   }
 
   const guardar = async () => {
+    if (!form.nombre.trim() || !form.especialidad.trim() || !form.telefono.trim()) {
+      alert('Por favor completa todos los campos')
+      return
+    }
     if (editando) {
       await axios.put(`${API}/${editando}`, form)
       setEditando(null)
@@ -25,7 +29,7 @@ function Veterinarios() {
     setForm({ nombre: '', especialidad: '', telefono: '' })
     cargar()
   }
-
+  
   const editar = (v) => {
     setForm({ nombre: v.nombre, especialidad: v.especialidad, telefono: v.telefono })
     setEditando(v.id)
