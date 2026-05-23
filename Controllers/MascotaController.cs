@@ -80,6 +80,14 @@ namespace VetApp.Controllers
                 .ToListAsync();
             return Ok(mascotas);
         }
+
+        // Obtener el total de mascotas registradas
+        [HttpGet("total")]
+        public async Task<IActionResult> Total()
+        {
+            var total = await _context.Mascotas.CountAsync();
+            return Ok(new { total });
+        }
         
     }
 }

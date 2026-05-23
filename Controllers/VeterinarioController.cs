@@ -80,5 +80,13 @@ namespace VetApp.Controllers
                 .ToListAsync();
             return Ok(veterinarios);
         }
+
+        // Obtener el total de veterinarios registrados
+        [HttpGet("total")]
+        public async Task<IActionResult> Total()
+        {
+            var total = await _context.Veterinarios.CountAsync();
+            return Ok(new { total });
+        }
     }
 }

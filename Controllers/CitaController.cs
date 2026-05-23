@@ -88,5 +88,12 @@ namespace VetApp.Controllers
                 .ToListAsync();
             return Ok(citas);
         }
+        // Obtener el total de citas registradas
+        [HttpGet("total")]
+        public async Task<IActionResult> Total()
+        {
+            var total = await _context.Citas.CountAsync();
+            return Ok(new { total });
+        }
     }
 }
