@@ -69,5 +69,16 @@ namespace VetApp.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+
+        // Buscar veterinarios por nombre
+        [HttpGet("buscar/{nombre}")]
+        public async Task<IActionResult> Buscar(string nombre)
+        {
+            var veterinarios = await _context.Veterinarios
+                .Where(v => v.Nombre.Contains(nombre))
+                .ToListAsync();
+            return Ok(veterinarios);
+        }
     }
 }

@@ -76,5 +76,17 @@ namespace VetApp.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        // Buscar citas por motivo
+        [HttpGet("buscar/{motivo}")]
+        public async Task<IActionResult> Buscar(string motivo)
+        {
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.Motivo.Contains(motivo))
+                .ToListAsync();
+            return Ok(citas);
+        }
     }
 }
