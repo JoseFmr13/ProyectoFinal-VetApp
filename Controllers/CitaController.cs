@@ -95,5 +95,31 @@ namespace VetApp.Controllers
             var total = await _context.Citas.CountAsync();
             return Ok(new { total });
         }
+
+        // Obtener citas del dia de hoy
+        [HttpGet("hoy")]
+        public async Task<IActionResult> CitasHoy()
+        {
+            var hoy = DateTime.Today;
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.Fecha.Date == hoy)
+                .ToListAsync();
+            return Ok(citas);
+        }
+
+        // Obtener citas por veterinario
+        [HttpGet("veterinario/{veterinarioId}")]
+        public async Task<IActionResult> CitasPorVeterinario(int veterinarioId)
+        {
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.VeterinarioId == veterinarioId)
+                .ToListAsync();
+            return Ok(citas);
+        }
+
     }
 }
