@@ -34,10 +34,18 @@ namespace VetApp.Controllers
             return Ok(mascota);
         }
 
-        // Registrar una nueva mascota
+        // Crear una nueva mascota con validación de campos
         [HttpPost]
         public async Task<IActionResult> Create(Mascota mascota)
         {
+            if (string.IsNullOrWhiteSpace(mascota.Nombre) ||
+                string.IsNullOrWhiteSpace(mascota.Especie) ||
+                string.IsNullOrWhiteSpace(mascota.Raza) ||
+                string.IsNullOrWhiteSpace(mascota.NombreDueno))
+            {
+                return BadRequest("Todos los campos son obligatorios");
+            }
+
             _context.Mascotas.Add(mascota);
             await _context.SaveChangesAsync();
             return Ok(mascota);

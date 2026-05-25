@@ -34,15 +34,21 @@ namespace VetApp.Controllers
             return Ok(veterinario);
         }
 
-        // Crear un nuevo veterinario
+        // Crear un nuevo veterinario con validación de campos
         [HttpPost]
         public async Task<IActionResult> Create(Veterinario veterinario)
         {
+            if (string.IsNullOrWhiteSpace(veterinario.Nombre) ||
+                string.IsNullOrWhiteSpace(veterinario.Especialidad) ||
+                string.IsNullOrWhiteSpace(veterinario.Telefono))
+            {
+                return BadRequest("Todos los campos son obligatorios");
+            }
+
             _context.Veterinarios.Add(veterinario);
             await _context.SaveChangesAsync();
             return Ok(veterinario);
         }
-
         // Actualizar un veterinario existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Veterinario veterinario)

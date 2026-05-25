@@ -40,10 +40,17 @@ namespace VetApp.Controllers
             return Ok(cita);
         }
 
-        // Crear una nueva cita
+        // Crear una nueva cita con validación de campos
         [HttpPost]
         public async Task<IActionResult> Create(Cita cita)
         {
+            if (string.IsNullOrWhiteSpace(cita.Motivo) ||
+                cita.VeterinarioId == 0 ||
+                cita.MascotaId == 0)
+            {
+                return BadRequest("Todos los campos son obligatorios");
+            }
+
             _context.Citas.Add(cita);
             await _context.SaveChangesAsync();
             return Ok(cita);
