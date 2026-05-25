@@ -5,6 +5,7 @@ const API = 'http://localhost:5041/api/Veterinario'
 
 function Veterinarios() {
   const [veterinarios, setVeterinarios] = useState([])
+  const [busqueda, setBusqueda] = useState('')
   const [form, setForm] = useState({ nombre: '', especialidad: '', telefono: '' })
   const [editando, setEditando] = useState(null)
 
@@ -29,17 +30,22 @@ function Veterinarios() {
     setForm({ nombre: '', especialidad: '', telefono: '' })
     cargar()
   }
-  
+
   const editar = (v) => {
     setForm({ nombre: v.nombre, especialidad: v.especialidad, telefono: v.telefono })
     setEditando(v.id)
   }
 
-const eliminar = async (id) => {
-  if (!window.confirm('¿Estás seguro de que deseas eliminar este veterinario?')) return
-  await axios.delete(`${API}/${id}`)
-  cargar()
-}
+  const eliminar = async (id) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este veterinario?')) return
+    await axios.delete(`${API}/${id}`)
+    cargar()
+  }
+
+  const veterinariosFiltrados = veterinarios.filter(v =>
+    v.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    v.especialidad.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   return (
     <div>
@@ -62,29 +68,40 @@ const eliminar = async (id) => {
         )}
       </div>
 
-      <table style={styles.tabla}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Especialidad</th>
-            <th>Teléfono</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {veterinarios.map(v => (
-            <tr key={v.id}>
-              <td>{v.nombre}</td>
-              <td>{v.especialidad}</td>
-              <td>{v.telefono}</td>
-              <td>
-                <button style={styles.btnEditar} onClick={() => editar(v)}>Editar</button>
-                <button style={styles.btnEliminar} onClick={() => eliminar(v.id)}>Eliminar</button>
-              </td>
+      <input
+        style={{ ...styles.input, marginBottom: '16px', width: '300px' }}
+        placeholder="Buscar por nombre o especialidad..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+      />
+
+      {veterinariosFiltrados.length === 0 ? (
+        <p style={styles.sinRegistros}>No se encontraron veterinarios</p>
+      ) : (
+        <table style={styles.tabla}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Especialidad</th>
+              <th>Teléfono</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {veterinariosFiltrados.map(v => (
+              <tr key={v.id}>
+                <td>{v.nombre}</td>
+                <td>{v.especialidad}</td>
+                <td>{v.telefono}</td>
+                <td>
+                  <button style={styles.btnEditar} onClick={() => editar(v)}>Editar</button>
+                  <button style={styles.btnEliminar} onClick={() => eliminar(v.id)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }
@@ -96,7 +113,8 @@ const styles = {
   btnCancelar: { padding: '8px 16px', backgroundColor: '#aaa', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' },
   btnEditar: { padding: '6px 12px', backgroundColor: '#f0a500', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginRight: '6px' },
   btnEliminar: { padding: '6px 12px', backgroundColor: '#e53935', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' },
-  tabla: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' }
+  tabla: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' },
+  sinRegistros: { color: '#888', textAlign: 'center', marginTop: '20px', fontSize: '16px' }
 }
 
 export default Veterinarios
