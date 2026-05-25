@@ -5,6 +5,7 @@ using VetApp.Models;
 
 namespace VetApp.Controllers
 {
+    // Controlador para gestionar las citas veterinarias
     [ApiController]
     [Route("api/[controller]")]
     public class CitaController : ControllerBase
@@ -16,6 +17,7 @@ namespace VetApp.Controllers
             _context = context;
         }
 
+        // Obtener todas las citas incluyendo datos de veterinario y mascota
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,6 +28,7 @@ namespace VetApp.Controllers
             return Ok(citas);
         }
 
+        // Obtener una cita por ID con sus relaciones
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,14 +40,23 @@ namespace VetApp.Controllers
             return Ok(cita);
         }
 
+        // Crear una nueva cita con validación de campos
         [HttpPost]
         public async Task<IActionResult> Create(Cita cita)
         {
+            if (string.IsNullOrWhiteSpace(cita.Motivo) ||
+                cita.VeterinarioId == 0 ||
+                cita.MascotaId == 0)
+            {
+                return BadRequest("Todos los campos son obligatorios");
+            }
+
             _context.Citas.Add(cita);
             await _context.SaveChangesAsync();
             return Ok(cita);
         }
 
+        // Actualizar una cita existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Cita cita)
         {
@@ -60,6 +72,7 @@ namespace VetApp.Controllers
             return Ok(existing);
         }
 
+        // Eliminar una cita por ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -70,5 +83,50 @@ namespace VetApp.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        // Buscar citas por motivo
+        [HttpGet("buscar/{motivo}")]
+        public async Task<IActionResult> Buscar(string motivo)
+        {
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.Motivo.Contains(motivo))
+                .ToListAsync();
+            return Ok(citas);
+        }
+        // Obtener el total de citas registradas
+        [HttpGet("total")]
+        public async Task<IActionResult> Total()
+        {
+            var total = await _context.Citas.CountAsync();
+            return Ok(new { total });
+        }
+
+        // Obtener citas del dia de hoy
+        [HttpGet("hoy")]
+        public async Task<IActionResult> CitasHoy()
+        {
+            var hoy = DateTime.Today;
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.Fecha.Date == hoy)
+                .ToListAsync();
+            return Ok(citas);
+        }
+
+        // Obtener citas por veterinario
+        [HttpGet("veterinario/{veterinarioId}")]
+        public async Task<IActionResult> CitasPorVeterinario(int veterinarioId)
+        {
+            var citas = await _context.Citas
+                .Include(c => c.Veterinario)
+                .Include(c => c.Mascota)
+                .Where(c => c.VeterinarioId == veterinarioId)
+                .ToListAsync();
+            return Ok(citas);
+        }
+
     }
 }

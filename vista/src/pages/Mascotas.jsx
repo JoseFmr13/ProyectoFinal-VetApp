@@ -5,6 +5,7 @@ const API = 'http://localhost:5041/api/Mascota'
 
 function Mascotas() {
   const [mascotas, setMascotas] = useState([])
+  const [busqueda, setBusqueda] = useState('')
   const [form, setForm] = useState({ nombre: '', especie: '', raza: '', nombreDueno: '' })
   const [editando, setEditando] = useState(null)
 
@@ -16,6 +17,10 @@ function Mascotas() {
   }
 
   const guardar = async () => {
+    if (!form.nombre.trim() || !form.especie.trim() || !form.raza.trim() || !form.nombreDueno.trim()) {
+      alert('Por favor completa todos los campos')
+      return
+    }
     if (editando) {
       await axios.put(`${API}/${editando}`, form)
       setEditando(null)
@@ -32,9 +37,16 @@ function Mascotas() {
   }
 
   const eliminar = async (id) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta mascota?')) return
     await axios.delete(`${API}/${id}`)
     cargar()
   }
+
+  const mascotasFiltradas = mascotas.filter(m =>
+    m.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+    m.especie.toLowerCase().includes(busqueda.toLowerCase()) ||
+    m.nombreDueno.toLowerCase().includes(busqueda.toLowerCase())
+  )
 
   return (
     <div>
@@ -59,31 +71,42 @@ function Mascotas() {
         )}
       </div>
 
-      <table style={styles.tabla}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Especie</th>
-            <th>Raza</th>
-            <th>Dueño</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {mascotas.map(m => (
-            <tr key={m.id}>
-              <td>{m.nombre}</td>
-              <td>{m.especie}</td>
-              <td>{m.raza}</td>
-              <td>{m.nombreDueno}</td>
-              <td>
-                <button style={styles.btnEditar} onClick={() => editar(m)}>Editar</button>
-                <button style={styles.btnEliminar} onClick={() => eliminar(m.id)}>Eliminar</button>
-              </td>
+      <input
+        style={{ ...styles.input, marginBottom: '16px', width: '300px' }}
+        placeholder="Buscar por nombre, especie o dueño..."
+        value={busqueda}
+        onChange={e => setBusqueda(e.target.value)}
+      />
+
+      {mascotasFiltradas.length === 0 ? (
+        <p style={styles.sinRegistros}>No se encontraron mascotas</p>
+      ) : (
+        <table style={styles.tabla}>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Especie</th>
+              <th>Raza</th>
+              <th>Dueño</th>
+              <th>Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {mascotasFiltradas.map(m => (
+              <tr key={m.id}>
+                <td>{m.nombre}</td>
+                <td>{m.especie}</td>
+                <td>{m.raza}</td>
+                <td>{m.nombreDueno}</td>
+                <td>
+                  <button style={styles.btnEditar} onClick={() => editar(m)}>Editar</button>
+                  <button style={styles.btnEliminar} onClick={() => eliminar(m.id)}>Eliminar</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   )
 }
@@ -95,7 +118,8 @@ const styles = {
   btnCancelar: { padding: '8px 16px', backgroundColor: '#aaa', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' },
   btnEditar: { padding: '6px 12px', backgroundColor: '#f0a500', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', marginRight: '6px' },
   btnEliminar: { padding: '6px 12px', backgroundColor: '#e53935', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' },
-  tabla: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' }
+  tabla: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' },
+  sinRegistros: { color: '#888', textAlign: 'center', marginTop: '20px', fontSize: '16px' }
 }
 
 export default Mascotas

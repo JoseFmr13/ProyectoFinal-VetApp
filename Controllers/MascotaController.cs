@@ -5,6 +5,7 @@ using VetApp.Models;
 
 namespace VetApp.Controllers
 {
+    // Controlador para gestionar el catálogo de mascotas
     [ApiController]
     [Route("api/[controller]")]
     public class MascotaController : ControllerBase
@@ -16,6 +17,7 @@ namespace VetApp.Controllers
             _context = context;
         }
 
+        // Obtener todas las mascotas registradas
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -23,6 +25,7 @@ namespace VetApp.Controllers
             return Ok(mascotas);
         }
 
+        // Obtener una mascota por ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -31,14 +34,24 @@ namespace VetApp.Controllers
             return Ok(mascota);
         }
 
+        // Crear una nueva mascota con validación de campos
         [HttpPost]
         public async Task<IActionResult> Create(Mascota mascota)
         {
+            if (string.IsNullOrWhiteSpace(mascota.Nombre) ||
+                string.IsNullOrWhiteSpace(mascota.Especie) ||
+                string.IsNullOrWhiteSpace(mascota.Raza) ||
+                string.IsNullOrWhiteSpace(mascota.NombreDueno))
+            {
+                return BadRequest("Todos los campos son obligatorios");
+            }
+
             _context.Mascotas.Add(mascota);
             await _context.SaveChangesAsync();
             return Ok(mascota);
         }
 
+        // Actualizar los datos de una mascota existente
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Mascota mascota)
         {
@@ -54,6 +67,7 @@ namespace VetApp.Controllers
             return Ok(existing);
         }
 
+        // Eliminar una mascota por ID
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -64,5 +78,24 @@ namespace VetApp.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        // Buscar mascotas por nombre
+        [HttpGet("buscar/{nombre}")]
+        public async Task<IActionResult> Buscar(string nombre)
+        {
+            var mascotas = await _context.Mascotas
+                .Where(m => m.Nombre.Contains(nombre))
+                .ToListAsync();
+            return Ok(mascotas);
+        }
+
+        // Obtener el total de mascotas registradas
+        [HttpGet("total")]
+        public async Task<IActionResult> Total()
+        {
+            var total = await _context.Mascotas.CountAsync();
+            return Ok(new { total });
+        }
+        
     }
 }
